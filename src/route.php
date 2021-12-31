@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Khai báo route
  * Nếu URL không có mặc định quay về trang chủ
@@ -21,6 +22,18 @@ if (count(URL) != 0) {
             break;
         case 'thanh-toan':
             ProductController::CheckoutController();
+            break;
+        case 'tim-kiem':
+            ProductController::SearchController();
+            break;
+        case 'add-cart':
+            ProductController::AddCartController();
+            break;
+        case 'remove-cart-item':
+            ProductController::RemoveCartItemController();
+            break;
+        case 'check-out':
+            ProductController::CheckoutCartController();
             break;
         default:
             include ROOT_DIR . '/src/views/admin/404.php';

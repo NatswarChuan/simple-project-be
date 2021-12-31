@@ -70,6 +70,17 @@ class ProductController
 
     public static function CartController()
     {
+        $products = [];
+        $total = 0;
+        $productModel = new ProductModel();
+        if (!empty($_SESSION['cart'])) {
+            foreach ($_SESSION['cart'] as $key => $value) {
+                $product = $productModel->getProductInfo($key, $value);
+                array_push($products, $product);
+                $price = $product['product_price'] * (100 - $product['product_sale']) / 100;
+                $total += $price;
+            }
+        }
         include ROOT_DIR . '/src/views/user/gio-hang.php';
     }
 
@@ -123,6 +134,80 @@ class ProductController
 
     public static function CheckoutController()
     {
+        $products = [];
+        $total = 0;
+        $productModel = new ProductModel();
+        if (!empty($_SESSION['cart'])) {
+            foreach ($_SESSION['cart'] as $key => $value) {
+                $product = $productModel->getProductInfo($key, $value);
+                array_push($products, $product);
+                $price = $product['product_price'] * (100 - $product['product_sale']) / 100;
+                $total += $price;
+            }
+        }
         include ROOT_DIR . '/src/views/user/thanh-toan.php';
+    }
+
+    public static function SearchController()
+    {
+        $productModel = new ProductModel();
+        if (empty($_GET['search'])) {
+            include ROOT_DIR . '/src/views/admin/404.php';
+        } else {
+            $search = $_GET['search'];
+            $products = $productModel->getProductsSearch($search);
+            $page = 1;
+            if (count(URL) > 1) {
+                $arr = explode("-", URL[1]);
+                $page = $arr[count($arr) - 1];
+            }
+            $count = $productModel->getCountProductsSearch($search);
+            $count = $count % 12 == 0 ? intval($count / 12) : intval($count / 12) + 1;
+
+            $link = BASE_URL . '/tim-kiem/trang-';
+            include ROOT_DIR . '/src/views/user/tim-kiem.php';
+        }
+    }
+
+    public static function AddCartController()
+    {
+        if (count(URL) > 1) {
+            $arr = explode("-", URL[1]);
+            $id = $arr[count($arr) - 1];
+            unset($arr[count($arr) - 1]);
+            $name = "%" . implode("%", $arr) . "%";
+            if (empty($_SESSION['cart'])) {
+                $_SESSION['cart'] = [$id =>  $name];
+            } else {
+                $_SESSION['cart'][$id] = $name;
+            }
+            header("Location: " . BASE_URL . '/san-pham/' . URL[1]);
+        } else {
+            include ROOT_DIR . '/src/views/admin/404.php';
+        }
+    }
+
+    public static function RemoveCartItemController()
+    {
+        if (count(URL) > 1 && !empty($_SESSION['cart'])) {
+            unset($_SESSION['cart'][URL[1]]);
+            header("Location: " . BASE_URL . '/gio-hang');
+        } else {
+            include ROOT_DIR . '/src/views/admin/404.php';
+        }
+    }
+    public static function CheckoutCartController()
+    {
+        if (!empty($_SESSION['cart']) && !empty($_GET['address']) && !empty($_GET['phone']) && !empty($_GET['customer'])) {
+            $address = $_GET['address'];
+            $phone = $_GET['phone'];
+            $customer = $_GET['customer'];
+            var_dump($address);
+            var_dump($phone);
+            var_dump($customer);
+            // header("Location: " . BASE_URL . '/trang-chu');
+        } else {
+            include ROOT_DIR . '/src/views/admin/404.php';
+        }
     }
 }

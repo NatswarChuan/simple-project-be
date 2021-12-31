@@ -82,4 +82,23 @@ class ProductModel extends Db
         $sql->bind_param("is", $id, $name);
         return $sql->execute();
     }
+
+    public function getProductsSearch($search)
+    {
+        $search = '%' . $search . '%';
+        $sql = parent::$conection->prepare("SELECT * FROM `product` WHERE `product_title` LIKE ? AND `status` = 1 ORDER BY `product_sale` DESC, `product_id` DESC LIMIT 0,12");
+        $sql->bind_param("s", $search);
+        return parent::select($sql);
+    }
+
+    public function getCountProductsSearch($search)
+    {
+        $search = '%' . $search . '%';
+        $sql = parent::$conection->prepare("SELECT
+        COUNT(`product`.`product_id`)
+        FROM `product` 
+        WHERE `product_title` LIKE ? AND `status` = 1");
+        $sql->bind_param("s", $search);
+        return parent::select($sql)[0]['COUNT(`product`.`product_id`)'];
+    }
 }

@@ -21,42 +21,35 @@ include ROOT_DIR . '/src/views/user/head.php';
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna, dignissim nec auctor in,
                         mattis vitae leo.</p>
                 </div>
-                <form>
+                <form method="get" action="<?php echo BASE_URL . '/check-out/' ?>">
                     <div class="products">
                         <h3 class="title">Checkout</h3>
-                        <div class="item"><span class="price">$200</span>
-                            <p class="item-name">Product 1</p>
-                            <p class="item-description">Lorem ipsum dolor sit amet</p>
-                        </div>
-                        <div class="item"><span class="price">$120</span>
-                            <p class="item-name">Product 2</p>
-                            <p class="item-description">Lorem ipsum dolor sit amet</p>
-                        </div>
-                        <div class="total"><span>Total</span><span class="price">$320</span></div>
+                        <?php
+                        foreach ($products as $product) {
+                        ?>
+                            <div class="item"><span class="price"><?php echo number_format($product['product_price'] * (100 - $product['product_sale']) / 100, 0, '', ','); ?>đ</span>
+                                <p class="item-name"><?php echo $product['product_title'] ?></p>
+                            </div>
+                        <?php
+                        }
+                        ?>
+                        <div class="total"><span>Total</span><span class="price"><?php echo number_format($total, 0, '', ',') ?>đ</span></div>
                     </div>
-                    <div class="card-details">
-                        <h3 class="title">Credit Card Details</h3>
-                        <div class="form-row">
-                            <div class="col-sm-7">
-                                <div class="form-group"><label for="card_holder">Card Holder</label><input class="form-control" type="text" id="card_holder" placeholder="Card Holder" name="card_holder"></div>
-                            </div>
-                            <div class="col-sm-5">
-                                <div class="form-group"><label>Expiration date</label>
-                                    <div class="input-group expiration-date"><input class="form-control" type="text" placeholder="MM" name="expiration_month"><input class="form-control" type="text" placeholder="YY" name="expiration_year"></div>
-                                </div>
-                            </div>
-                            <div class="col-sm-8">
-                                <div class="form-group"><label for="card_number">Card Number</label><input class="form-control" type="text" id="card_number" placeholder="Card Number" name="card_number"></div>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="form-group"><label for="cvc">CVC</label><input class="form-control" type="text" id="cvc" placeholder="CVC" name="cvc"></div>
-                            </div>
-                            <div class="col-sm-12">
-                                <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Proceed</button></div>
-                            </div>
-                        </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Address</label>
+                        <input type="text" class="form-control" name="address">
                     </div>
-                </form>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Phone</label>
+                        <input type="text" class="form-control" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Customer Name</label>
+                        <input type="text" class="form-control" name="customer">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+            </form>
             </div>
         </section>
     </main>

@@ -23,5 +23,5 @@ if (array_key_exists('REDIRECT_URL', $_SERVER)) {
 } else {
     define("URL", []);
 };
-
+session_start();
 include_once './src/route.php';

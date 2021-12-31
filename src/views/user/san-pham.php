@@ -37,8 +37,8 @@ include ROOT_DIR . '/src/views/user/head.php';
                                     <h3><?php echo $product['product_title'] ?></h3>
                                     <div class="price">
                                         <h3><?php echo number_format($price, 0, '', ',');  ?>đ</h3>
-                                    </div><button class="btn btn-primary" type="button"><i class="icon-basket"></i>Add
-                                        to Cart</button>
+                                    </div><a class="btn btn-primary" role="button" href="<?php echo BASE_URL.'/add-cart/'.TienIch::vn_to_str($product['product_title']).'-'.$product['product_id'] ?>"><i class="icon-basket"></i>Add
+                                        to Cart</a>
                                 </div>
                             </div>
                         </div>
