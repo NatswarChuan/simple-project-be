@@ -101,4 +101,64 @@ class ProductModel extends Db
         $sql->bind_param("s", $search);
         return parent::select($sql)[0]['COUNT(`product`.`product_id`)'];
     }
+
+    public function InsertProduct($name, $price, $sale, $desciption, $image, $categories)
+    {
+        $sql = parent::$conection->prepare("INSERT INTO `product`( `product_image`, `product_price`, `product_title`, `product_description`, `product_sale`) VALUES (?,?,?,?,?)");
+        $sql->bind_param("sissi", $image, $price, $name, $desciption, $sale);
+        $sql->execute();
+        $id = $sql->insert_id;
+        foreach ($categories as $category) {
+            $sql = parent::$conection->prepare("INSERT INTO `categories_products`(`product_id`, `category_id`) VALUES (?,?)");
+            $sql->bind_param("ii", $id, $category);
+            $sql->execute();
+        }
+    }
+
+    public function getProductInfoAdmin($id, $name)
+    {
+        $sql = parent::$conection->prepare("SELECT * FROM `product` WHERE `product_id` = ? AND `product_title` LIKE ?");
+        $sql->bind_param("is", $id, $name);
+        $result = parent::select($sql);
+        return count($result) != 0 ? parent::select($sql)[0] : null;
+    }
+
+    public function UpdateProduct($name, $price, $sale, $desciption, $image, $categories, $title, $id, $last_update, $status)
+    {
+        $sql = parent::$conection->prepare("UPDATE
+        `product`
+    SET
+        `product_image` = ?,
+        `product_price` = ?,
+        `product_title` = ?,
+        `product_description` = ?,
+        `product_sale` = ?,
+        `status` = ?,
+        `last_update` = `last_update` +1
+    WHERE
+        `product_id` = ? AND `product_title` LIKE ? AND `last_update` = ?");
+        $sql->bind_param("sissiiisi", $image, $price, $name, $desciption, $sale, $status, $id, $title, $last_update);
+        $sql->execute();
+        $sql = parent::$conection->prepare("DELETE FROM `categories_products` WHERE `product_id` = ?");
+        $sql->bind_param("i", $id);
+        $sql->execute();
+        foreach ($categories as $category) {
+            $sql = parent::$conection->prepare("INSERT INTO `categories_products`(`product_id`, `category_id`) VALUES (?,?)");
+            $sql->bind_param("ii", $id, $category);
+            $sql->execute();
+        }
+    }
+
+    public function getProductsAdmin($page)
+    {
+        $start = ($page - 1) * 12;
+        $sql = parent::$conection->prepare("SELECT * FROM `product` ORDER BY `product_id` DESC LIMIT ?,12");
+        $sql->bind_param("i", $start);
+        return parent::select($sql);
+    }
+    public function getCountProductsAdmin()
+    {
+        $sql = parent::$conection->prepare("SELECT COUNT(`product`.`product_id`) FROM `product`");
+        return parent::select($sql)[0]['COUNT(`product`.`product_id`)'];
+    }
 }

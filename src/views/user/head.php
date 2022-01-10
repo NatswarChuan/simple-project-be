@@ -12,4 +12,6 @@
     <link rel="stylesheet" href="<?php echo BASE_URL ?>/assets/fonts/simple-line-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css">
     <link rel="stylesheet" href="<?php echo BASE_URL ?>/assets/css/smoothproducts.css">
+    <script src="<?php echo BASE_URL ?>/ckeditor/ckeditor.js"></script>
+    <script src="<?php echo BASE_URL ?>/ckfinder/ckfinder.js"></script>
 </head>

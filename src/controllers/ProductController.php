@@ -210,4 +210,99 @@ class ProductController
             include ROOT_DIR . '/src/views/admin/404.php';
         }
     }
+
+    //Thêm sản phẩm
+    public static function AddProductController()
+    {
+        $categoryModel = new CategoryModel();
+        $categories =  $categoryModel->getCategories();
+        include ROOT_DIR . '/src/views/admin/them-san-pham.php';
+    }
+
+    public static function ConfirmAddProductController()
+    {
+        $productModel = new ProductModel();
+        $name = $_POST['name'];
+        $price = $_POST['price'];
+        $sale = $_POST['sale'];
+        $image = $_POST['image'];
+        $desciption = $_POST['desciption'];
+        $categories = [];
+        foreach ($_POST as $key => $value) {
+            if ($key != 'name' && $key != 'price' && $key != 'sale' && $key != 'image' && $key != 'desciption') {
+                array_push($categories, $value);
+            }
+        }
+        $productModel->InsertProduct($name, $price, $sale, $desciption, $image, $categories);
+        header("Location: " . BASE_URL . '/danh-sach-san-pham');
+    }
+
+    public static function UpdateProductController()
+    {
+        $categoryModel = new CategoryModel();
+        $productModel = new ProductModel();
+        $categories =  $categoryModel->getCategories();
+        if (count(URL) > 1) {
+
+            $arr = explode("-", URL[1]);
+            $id = $arr[count($arr) - 1];
+            unset($arr[count($arr) - 1]);
+            $name = "%" . implode("%", $arr) . "%";
+
+            $product = $productModel->getProductInfoAdmin($id, $name);
+            if (empty($product)) {
+                include ROOT_DIR . '/src/views/admin/404.php';
+            } else {
+                $categories_product = $categoryModel->getCategoriesProduct($id);
+                include ROOT_DIR . '/src/views/admin/sua-san-pham.php';
+            }
+        } else {
+            include ROOT_DIR . '/src/views/admin/404.php';
+        }
+    }
+
+    public static function ConfirmUpdateProductController()
+    {
+        $productModel = new ProductModel();
+        if (count(URL) > 1) {
+
+            $arr = explode("-", URL[1]);
+            $id = $arr[count($arr) - 1];
+            unset($arr[count($arr) - 1]);
+            $title = "%" . implode("%", $arr) . "%";
+
+            $name = $_POST['name'];
+            $price = $_POST['price'];
+            $sale = $_POST['sale'];
+            $image = $_POST['image'];
+            $desciption = $_POST['desciption'];
+            $status = empty($_POST['status']) ? 0 : 1;
+            $last_update = $_POST['last_update'];
+            $categories = [];
+            foreach ($_POST as $key => $value) {
+                if ($key != 'name' && $key != 'price' && $key != 'sale' && $key != 'image' && $key != 'desciption' && $key != 'descistatusption' && $key != 'last_update') {
+                    array_push($categories, $value);
+                }
+            }
+            $productModel->UpdateProduct($name, $price, $sale, $desciption, $image, $categories, $title, $id, $last_update, $status);
+            header("Location: " . BASE_URL . '/danh-sach-san-pham');
+        } else {
+            include ROOT_DIR . '/src/views/admin/404.php';
+        }
+    }
+
+    public static function ProductListController()
+    {
+        $productModel = new ProductModel();
+        $page = 1;
+        if (count(URL) > 1) {
+            $arr = explode("-", URL[1]);
+            $page = $arr[count($arr) - 1];
+        }
+        $products = $productModel->getProductsAdmin($page);
+        $link = BASE_URL . '/' . URL[0] . '/trang-';
+        $count = $productModel->getCountProductsAdmin();
+        $count = $count % 12 == 0 ? intval($count / 12) : intval($count / 12) + 1;
+        include ROOT_DIR . '/src/views/admin/danh-sach-san-pham.php';
+    }
 }

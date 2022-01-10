@@ -35,6 +35,21 @@ if (count(URL) != 0) {
         case 'check-out':
             ProductController::CheckoutCartController();
             break;
+        case 'them-san-pham':
+            ProductController::AddProductController();
+            break;
+        case 'su-ly-them-san-pham':
+            ProductController::ConfirmAddProductController();
+            break;
+        case 'sua-san-pham':
+            ProductController::UpdateProductController();
+            break;
+        case 'su-ly-sua-san-pham':
+            ProductController::ConfirmUpdateProductController();
+            break;
+        case 'danh-sach-san-pham':
+            ProductController::ProductListController();
+            break;
         default:
             include ROOT_DIR . '/src/views/admin/404.php';
             break;
